@@ -25,11 +25,29 @@ function ClazyLoad(Vue) {
       src: {
         type: String,
         required: true
+      },
+      /**
+       * IntersectionObserver root element
+       * @type {Object}
+       */
+      element: {
+        type: String
+      },
+      /**
+       * IntersectionObserver threshold
+       * @type {Object}
+       */
+      threshold: {
+        type: [Array, Number],
+        default: () => {
+          return [0, 0.5, 1]
+        }
       }
     },
     data() {
       return {
-        loaded: false
+        loaded: false,
+        observer: null
       }
     },
     methods: {
@@ -37,22 +55,53 @@ function ClazyLoad(Vue) {
        * Start loading image
        */
       load() {
-        // fake image
-        let img = new Image
-        // with this function we can use it in multiple places
-        // like the two listeners below
-        const fn = () => {
-          this.loaded = true
-          // emits 'load' event upwards
-          this.$emit('load')
-          // discard fake image
-          img = null
+        if (!this.loaded) {
+          // fake image
+          let img = new Image
+          // with this function we can use it in multiple places
+          // like the two listeners below
+          const fn = () => {
+            this.loaded = true
+            // emits 'load' event upwards
+            this.$emit('load')
+            // discard fake image
+            img = null
+
+            // erases observer
+            this.observer.disconnect()
+            this.observer = null
+          }
+
+          img.addEventListener('load', fn)
+          // TODO: configurable error function and/or slot
+          img.addEventListener('error', fn)
+
+          img.src = this.src
+        }
+      },
+
+      /**
+       * Creates IntersectionObserver instance and observe current element
+       */
+      observe() {
+        let options = {
+          threshold: this.threshold,
+          root: this.element ? document.querySelector(this.element) : null,
+          rootMargin: '0px'
         }
 
-        img.addEventListener('load', fn)
-        img.addEventListener('error', fn)
+        // creates IO instance
+        this.observer = new IntersectionObserver((entries) => {
+          // as we instantiated one for each component
+          // we can directly access the first index
+          // TODO: configurable intersectionRatio
+          if (entries[0].intersectionRatio >= 0.4) {
+            this.load()
+          }
+        }, options)
 
-        img.src = this.src
+        // start observing main component
+        this.observer.observe(this.$refs.component)
       }
     },
     render(h) {
@@ -60,15 +109,16 @@ function ClazyLoad(Vue) {
         // adds 'loaded' class if finished loading
         // or 'loading' class if still loading
         // TODO: allow custom class naming
-        class: this.loaded ? 'loaded' : 'loading'
+        class: this.loaded ? 'loaded' : 'loading',
+        ref: 'component'
       }, [
         this.loaded ? this.$slots.image : this.$slots.placeholder
       ])
     },
-    created() {
-      // starts loading right away
-      // TODO: load only when visible onscreen
-      this.load()
+    mounted() {
+      // start observing the element visibility
+      // need to request animation frame to ensure the element is in the DOM
+      requestAnimationFrame(this.observe)
     }
   })
 }

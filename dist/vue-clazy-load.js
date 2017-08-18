@@ -107,11 +107,29 @@ function ClazyLoad(Vue) {
       src: {
         type: String,
         required: true
+      },
+      /**
+       * IntersectionObserver root element
+       * @type {Object}
+       */
+      element: {
+        type: String
+      },
+      /**
+       * IntersectionObserver threshold
+       * @type {Object}
+       */
+      threshold: {
+        type: [Array, Number],
+        default: function _default() {
+          return [0, 0.5, 1];
+        }
       }
     },
     data: function data() {
       return {
-        loaded: false
+        loaded: false,
+        observer: null
       };
     },
 
@@ -122,22 +140,55 @@ function ClazyLoad(Vue) {
       load: function load() {
         var _this = this;
 
-        // fake image
-        var img = new Image();
-        // with this function we can use it in multiple places
-        // like the two listeners below
-        var fn = function fn() {
-          _this.loaded = true;
-          // emits 'load' event upwards
-          _this.$emit('load');
-          // discard fake image
-          img = null;
-        };
+        if (!this.loaded) {
+          // fake image
+          var img = new Image();
+          // with this function we can use it in multiple places
+          // like the two listeners below
+          var fn = function fn() {
+            _this.loaded = true;
+            // emits 'load' event upwards
+            _this.$emit('load');
+            // discard fake image
+            img = null;
 
-        img.addEventListener('load', fn);
-        img.addEventListener('error', fn);
+            // erases observer
+            _this.observer.disconnect();
+            _this.observer = null;
+          };
 
-        img.src = this.src;
+          img.addEventListener('load', fn);
+          // TODO: configurable error function and/or slot
+          img.addEventListener('error', fn);
+
+          img.src = this.src;
+        }
+      },
+
+
+      /**
+       * Creates IntersectionObserver instance and observe current element
+       */
+      observe: function observe() {
+        var _this2 = this;
+
+        var options = {
+          threshold: this.threshold,
+          root: this.element ? document.querySelector(this.element) : null,
+          rootMargin: '0px'
+
+          // creates IO instance
+        };this.observer = new IntersectionObserver(function (entries) {
+          // as we instantiated one for each component
+          // we can directly access the first index
+          // TODO: configurable intersectionRatio
+          if (entries[0].intersectionRatio >= 0.4) {
+            _this2.load();
+          }
+        }, options);
+
+        // start observing main component
+        this.observer.observe(this.$refs.component);
       }
     },
     render: function render(h) {
@@ -145,13 +196,14 @@ function ClazyLoad(Vue) {
         // adds 'loaded' class if finished loading
         // or 'loading' class if still loading
         // TODO: allow custom class naming
-        class: this.loaded ? 'loaded' : 'loading'
+        class: this.loaded ? 'loaded' : 'loading',
+        ref: 'component'
       }, [this.loaded ? this.$slots.image : this.$slots.placeholder]);
     },
-    created: function created() {
-      // starts loading right away
-      // TODO: load only when visible onscreen
-      this.load();
+    mounted: function mounted() {
+      // start observing the element visibility
+      // need to request animation frame to ensure the element is in the DOM
+      requestAnimationFrame(this.observe);
     }
   });
 }
