@@ -48,7 +48,7 @@ Select one option:
 2. Embed script tag
 
   ```html
-  <script src="https://unpkgd.com/vue-clazy-load/dist/vue-clazy-load.min.js"></script>
+  <script src="https://unpkg.com/vue-clazy-load/dist/vue-clazy-load.min.js"></script>
   ```
 
 Then register the component into Vue:
