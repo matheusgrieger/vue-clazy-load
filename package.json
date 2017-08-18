@@ -1,0 +1,30 @@
+{
+  "name": "vue-clazy-load",
+  "version": "0.0.1",
+  "description": "Component-based lazy (CLazy) load images in Vue.js 2",
+  "keywords": [
+    "vue",
+    "vuejs",
+    "lazy load",
+    "lazyload",
+    "babel",
+    "webpack",
+    "component"
+  ],
+  "scripts": {
+    "build": "webpack"
+  },
+  "main": "src/clazy-load.js",
+  "repository": "git@github.com:matheusgrieger/vue-clazy-load.git",
+  "author": "matheusgrieger <matheusgrieger@hotmail.com>",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.1",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-env": "^1.6.0",
+    "babel-preset-stage-2": "^6.24.1",
+    "webpack": "^3.5.5"
+  }
+}
