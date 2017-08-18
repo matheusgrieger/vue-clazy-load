@@ -7,7 +7,7 @@ module.exports = ['normal', 'minified'].map((type) => {
     output: {
         filename: type === 'normal' ? 'vue-clazy-load.js' : 'vue-clazy-load.min.js',
         path: path.resolve(__dirname, 'dist'),
-        library: 'ClazyLoad',
+        library: 'VueClazyLoad',
         libraryTarget: 'umd',
         umdNamedDefine: true
     },

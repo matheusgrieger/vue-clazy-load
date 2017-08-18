@@ -2,11 +2,11 @@
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory();
 	else if(typeof define === 'function' && define.amd)
-		define("ClazyLoad", [], factory);
+		define("VueClazyLoad", [], factory);
 	else if(typeof exports === 'object')
-		exports["ClazyLoad"] = factory();
+		exports["VueClazyLoad"] = factory();
 	else
-		root["ClazyLoad"] = factory();
+		root["VueClazyLoad"] = factory();
 })(this, function() {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
@@ -79,63 +79,84 @@ return /******/ (function(modules) { // webpackBootstrap
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "install", function() { return install; });
 /*!
+ * Vue Clazy Load
  * Component-based lazy (CLazy) load images in Vue.js 2
  * @author Matheus Grieger
  * @version 0.0.1
  */
-var ClazyLoad = {
-  install: function install(Vue) {
-    Vue.component('ClazyLoad', {
-      name: 'ClazyLoad',
-      props: {
-        tag: {
-          required: false,
-          type: String,
-          default: 'div'
-        }
+function ClazyLoad(Vue) {
+  Vue.component('clazy-load', {
+    name: 'ClazyLoad',
+    props: {
+      /**
+       * HTML/Component tag name to be used in place of the component
+       * @type {Object}
+       * @default div
+       */
+      tag: {
+        type: String,
+        default: 'div'
       },
-      data: function data() {
-        return {
-          loaded: false
-        };
-      },
-
-      computed: {
-        src: function src() {
-          return this.$slots.image[0].data.attrs.src;
-        }
-      },
-      methods: {
-        load: function load() {
-          var _this = this;
-
-          var img = new Image();
-          var fn = function fn() {
-            _this.loaded = true;
-            _this.$emit('loaded');
-            img = null;
-          };
-
-          img.addEventListener('load', fn);
-          img.addEventListener('error', fn);
-
-          img.src = this.src;
-        }
-      },
-      render: function render(h) {
-        return h(this.tag, {
-          class: this.loaded ? 'loaded' : 'loading'
-        }, [this.loaded ? this.$slots.image : this.$slots.placeholder]);
-      },
-      created: function created() {
-        this.load();
+      /**
+       * Image source URL
+       * @type {Object}
+       * @required
+       */
+      src: {
+        type: String,
+        required: true
       }
-    });
-  }
-};
+    },
+    data: function data() {
+      return {
+        loaded: false
+      };
+    },
 
-/* harmony default export */ __webpack_exports__["default"] = (ClazyLoad);
+    methods: {
+      /**
+       * Start loading image
+       */
+      load: function load() {
+        var _this = this;
+
+        // fake image
+        var img = new Image();
+        // with this function we can use it in multiple places
+        // like the two listeners below
+        var fn = function fn() {
+          _this.loaded = true;
+          // emits 'load' event upwards
+          _this.$emit('load');
+          // discard fake image
+          img = null;
+        };
+
+        img.addEventListener('load', fn);
+        img.addEventListener('error', fn);
+
+        img.src = this.src;
+      }
+    },
+    render: function render(h) {
+      return h(this.tag, {
+        // adds 'loaded' class if finished loading
+        // or 'loading' class if still loading
+        // TODO: allow custom class naming
+        class: this.loaded ? 'loaded' : 'loading'
+      }, [this.loaded ? this.$slots.image : this.$slots.placeholder]);
+    },
+    created: function created() {
+      // starts loading right away
+      // TODO: load only when visible onscreen
+      this.load();
+    }
+  });
+}
+
+var install = ClazyLoad;
 
 /***/ })
 /******/ ]);

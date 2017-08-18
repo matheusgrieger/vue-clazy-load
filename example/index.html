@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>VueClazyLoad Testing Page</title>
+    <link rel="stylesheet" href="assets/css/main.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.4.2/vue.js"></script>
+    <script src="../dist/vue-clazy-load.js"></script>
+  </head>
+  <body>
+    <div id="app">
+      <clazy-load class="wrapper" @load="log" v-for="img in images" :src="img">
+        <transition name="fade" slot="image">
+          <img :src="img">
+        </transition>
+        <transition name="fade" slot="placeholder">
+          <div class="preloader">
+            <div class="circle">
+              <div class="circle-inner"></div>
+            </div>
+          </div>
+        </transition>
+      </clazy-load>
+    </div>
+    <script src="assets/js/main.js"></script>
+  </body>
+</html>
