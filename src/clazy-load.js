@@ -2,7 +2,7 @@
  * Vue Clazy Load
  * Component-based lazy (CLazy) load images in Vue.js 2
  * @author Matheus Grieger
- * @version 0.0.1
+ * @version 0.1.1
  */
 function ClazyLoad(Vue) {
   Vue.component('clazy-load', {
@@ -67,9 +67,8 @@ function ClazyLoad(Vue) {
             // discard fake image
             img = null
 
-            // erases observer
+            // erase observer
             this.observer.disconnect()
-            this.observer = null
           }
 
           img.addEventListener('load', fn)
