@@ -16,6 +16,10 @@ There are plenty of other Lazy Loaders out there, but they are all `directive`-b
 
 This project is also lightweight (<800 bytes gzipped) and uses the latest web APIs for best performance.
 
+## Demo
+
+Check out the [example page](https://matheusgrieger.github.io/vue-clazy-load/example/index.html).
+
 ## Installation
 
 Select one option:
@@ -25,7 +29,7 @@ Select one option:
   ```sh
   npm install vue-clazy-load --save
   ```
-  You can emit the `--save` option if using `npm@^5`.
+  You can omit the `--save` option if using `npm@^5`.
 
   You can also use Yarn as:
 
@@ -88,6 +92,14 @@ The component needs some configuration, though. It's only one required option, s
 Custom classes on the Clazy Load component are passed to the rendered output.
 
 Also, the component adds `loading` and `loaded` classes to the **root** element regarding the two possible states, enabling further customization with CSS.
+
+### Events
+
+There is currently one event available for you to listen to on the component.
+
+| Event | Description |
+|-------|-------------|
+| load | Event emitted when image finishes loading |
 
 ### Sub-components and elements
 
