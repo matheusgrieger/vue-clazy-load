@@ -1,6 +1,6 @@
 {
   "name": "vue-clazy-load",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Component-based lazy (CLazy) load images in Vue.js 2",
   "keywords": [
     "vue",
