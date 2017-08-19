@@ -84,134 +84,137 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
  * Vue Clazy Load
  * Component-based lazy (CLazy) load images in Vue.js 2
  * @author Matheus Grieger
- * @version 0.1.3
+ * @version 0.1.4
  */
-function ClazyLoad(Vue) {
-  Vue.component('clazy-load', {
-    name: 'ClazyLoad',
-    props: {
-      /**
-       * HTML/Component tag name to be used in place of the component
-       * @type {Object}
-       * @default div
-       */
-      tag: {
-        type: String,
-        default: 'div'
-      },
-      /**
-       * Image source URL
-       * @type {Object}
-       * @required
-       */
-      src: {
-        type: String,
-        required: true
-      },
-      /**
-       * IntersectionObserver root element
-       * @type {Object}
-       */
-      element: {
-        type: String
-      },
-      /**
-       * IntersectionObserver threshold
-       * @type {Object}
-       */
-      threshold: {
-        type: [Array, Number],
-        default: function _default() {
-          return [0, 0.5, 1];
-        }
-      }
-    },
-    data: function data() {
-      return {
-        loaded: false,
-        observer: null
-      };
-    },
-
-    methods: {
-      /**
-       * Start loading image
-       */
-      load: function load() {
-        var _this = this;
-
-        // disconnect observer
-        // so it doesn't load more than once
-        this.observer.disconnect();
-
-        if (!this.loaded) {
-          // fake image
-          var img = new Image();
-          // with this function we can use it in multiple places
-          // like the two listeners below
-          var fn = function fn() {
-            _this.loaded = true;
-            // emits 'load' event upwards
-            _this.$emit('load');
-            // discard fake image
-            img = null;
-            // remove observer from memory
-            _this.observer = null;
-          };
-
-          img.addEventListener('load', fn);
-          // TODO: configurable error function and/or slot
-          img.addEventListener('error', fn);
-
-          img.src = this.src;
-        }
-      },
-
-
-      /**
-       * Creates IntersectionObserver instance and observe current element
-       */
-      observe: function observe() {
-        var _this2 = this;
-
-        var options = {
-          threshold: this.threshold,
-          root: this.element ? document.querySelector(this.element) : null,
-          // TODO: allow custom rootMargin
-          rootMargin: '0px'
-
-          // creates IO instance
-        };this.observer = new IntersectionObserver(function (entries) {
-          // as we instantiated one for each component
-          // we can directly access the first index
-          // TODO: configurable intersectionRatio
-          if (entries[0].intersectionRatio >= 0.4) {
-            _this2.load();
+var ClazyLoad = {
+  install: function install(Vue) {
+    Vue.component('clazy-load', {
+      name: 'ClazyLoad',
+      props: {
+        /**
+         * HTML/Component tag name to be used in place of the component
+         * @type {Object}
+         * @default div
+         */
+        tag: {
+          type: String,
+          default: 'div'
+        },
+        /**
+         * Image source URL
+         * @type {Object}
+         * @required
+         */
+        src: {
+          type: String,
+          required: true
+        },
+        /**
+         * IntersectionObserver root element
+         * @type {Object}
+         */
+        element: {
+          type: String
+        },
+        /**
+         * IntersectionObserver threshold
+         * @type {Object}
+         */
+        threshold: {
+          type: [Array, Number],
+          default: function _default() {
+            return [0, 0.5, 1];
           }
-        }, options);
+        }
+      },
+      data: function data() {
+        return {
+          loaded: false,
+          observer: null
+        };
+      },
 
-        // start observing main component
-        this.observer.observe(this.$refs.component);
+      methods: {
+        /**
+         * Start loading image
+         */
+        load: function load() {
+          var _this = this;
+
+          // disconnect observer
+          // so it doesn't load more than once
+          this.observer.disconnect();
+
+          if (!this.loaded) {
+            // fake image
+            var img = new Image();
+            // with this function we can use it in multiple places
+            // like the two listeners below
+            var fn = function fn() {
+              _this.loaded = true;
+              // emits 'load' event upwards
+              _this.$emit('load');
+              // discard fake image
+              img = null;
+              // remove observer from memory
+              _this.observer = null;
+            };
+
+            img.addEventListener('load', fn);
+            // TODO: configurable error function and/or slot
+            img.addEventListener('error', fn);
+
+            img.src = this.src;
+          }
+        },
+
+
+        /**
+         * Creates IntersectionObserver instance and observe current element
+         */
+        observe: function observe() {
+          var _this2 = this;
+
+          var options = {
+            threshold: this.threshold,
+            root: this.element ? document.querySelector(this.element) : null,
+            // TODO: allow custom rootMargin
+            rootMargin: '0px'
+
+            // creates IO instance
+          };this.observer = new IntersectionObserver(function (entries) {
+            // as we instantiated one for each component
+            // we can directly access the first index
+            // TODO: configurable intersectionRatio
+            if (entries[0].intersectionRatio >= 0.4) {
+              _this2.load();
+            }
+          }, options);
+
+          // start observing main component
+          this.observer.observe(this.$refs.component);
+        }
+      },
+      render: function render(h) {
+        return h(this.tag, {
+          // adds 'loaded' class if finished loading
+          // or 'loading' class if still loading
+          // TODO: allow custom class naming
+          class: this.loaded ? 'loaded' : 'loading',
+          ref: 'component'
+        }, [this.loaded ? this.$slots.image : this.$slots.placeholder]);
+      },
+      mounted: function mounted() {
+        // start observing the element visibility
+        // need to request animation frame to ensure the element is in the DOM
+        requestAnimationFrame(this.observe);
       }
-    },
-    render: function render(h) {
-      return h(this.tag, {
-        // adds 'loaded' class if finished loading
-        // or 'loading' class if still loading
-        // TODO: allow custom class naming
-        class: this.loaded ? 'loaded' : 'loading',
-        ref: 'component'
-      }, [this.loaded ? this.$slots.image : this.$slots.placeholder]);
-    },
-    mounted: function mounted() {
-      // start observing the element visibility
-      // need to request animation frame to ensure the element is in the DOM
-      requestAnimationFrame(this.observe);
-    }
-  });
-}
+    });
+  }
+};
 
-var install = ClazyLoad;
+/* harmony default export */ __webpack_exports__["default"] = (ClazyLoad);
+var install = ClazyLoad.install;
 
 /***/ })
 /******/ ]);

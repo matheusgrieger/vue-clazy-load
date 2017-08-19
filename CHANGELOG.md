@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.1.4
+
+- **FIX** `import` was not working in Babel
+
 ## v0.1.3
 
 - **FIX** double loading on fast scrolling and/or slow connections
