@@ -132,11 +132,16 @@ Or simply add `IntersectionObserver` to the `?features=` query of the URL if alr
 
 The two configurable props `element` and `threshold` are bound to IntersectionObserver. `element` is used in a `document.querySelector` to pass the element to the `root` option, and `threshold` is used as it is. More details on those two options are available on [MDN](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API).
 
+## Changelog
+
+Check out [changelog](CHANGELOG.md) file.
+
 ## TODOs
 
 - [ ] Configurable loading error, possibly with another slot
 - [ ] Configurable `intersectionRatio` comparison value
 - [ ] Custom state class names
+- [ ] Configurable `rootMargin` for IntersectionObserver's root element
 
 ## Contributing
 
