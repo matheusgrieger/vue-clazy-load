@@ -14,7 +14,7 @@
   "scripts": {
     "build": "webpack"
   },
-  "main": "src/clazy-load.js",
+  "main": "dist/vue-clazy-load.js",
   "repository": "git@github.com:matheusgrieger/vue-clazy-load.git",
   "author": "matheusgrieger <matheusgrieger@hotmail.com>",
   "license": "MIT",

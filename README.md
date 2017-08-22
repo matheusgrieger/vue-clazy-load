@@ -142,6 +142,8 @@ Check out [changelog](CHANGELOG.md) file.
 - [ ] Configurable `intersectionRatio` comparison value
 - [ ] Custom state class names
 - [ ] Configurable `rootMargin` for IntersectionObserver's root element
+- [ ] Improve documentation writing
+- [ ] Add more documentation details
 
 ## Contributing
 

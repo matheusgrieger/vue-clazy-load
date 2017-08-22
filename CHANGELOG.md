@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.1.5
+
+- **FIX** build error when using Webpack and `import`ing
+
 ## v0.1.4
 
 - **FIX** `import` was not working in Babel
