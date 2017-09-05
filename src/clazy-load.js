@@ -2,7 +2,7 @@
  * Vue Clazy Load
  * Component-based lazy (CLazy) load images in Vue.js 2
  * @author Matheus Grieger
- * @version 0.1.5
+ * @version 0.2.0
  */
 const ClazyLoad = {
   install(Vue) {
@@ -31,9 +31,7 @@ const ClazyLoad = {
          * IntersectionObserver root element
          * @type {Object}
          */
-        element: {
-          type: String
-        },
+        element: String,
         /**
          * IntersectionObserver threshold
          * @type {Object}
@@ -43,12 +41,33 @@ const ClazyLoad = {
           default: () => {
             return [0, 0.5, 1]
           }
+        },
+        /**
+         * InserectionObserver visibility ratio
+         * @type {Object}
+         */
+        ratio: {
+          type: Number,
+          default: 0.4,
+          validator(value) {
+            // can't be less or equal to 0 and greater than 1
+            return value > 0 && value <= 1
+          }
+        },
+        /**
+         * IntersectionObserver root margin
+         * @type {Object}
+         */
+        margin: {
+          type: String,
+          default: '0px'
         }
       },
       data() {
         return {
           loaded: false,
-          observer: null
+          observer: null,
+          errored: false
         }
       },
       methods: {
@@ -63,21 +82,31 @@ const ClazyLoad = {
           if (!this.loaded) {
             // fake image
             let img = new Image
-            // with this function we can use it in multiple places
-            // like the two listeners below
-            const fn = () => {
+
+            img.addEventListener('load', () => {
               this.loaded = true
               // emits 'load' event upwards
               this.$emit('load')
+
+              clear()
+            })
+
+            img.addEventListener('error', (event) => {
+              this.errored = true
+              // emits 'error' event upwards
+              // adds the original event as argument
+              this.$emit('error', event)
+
+              clear()
+            })
+
+            // function used to clear variables from memory
+            const clear = () => {
               // discard fake image
               img = null
               // remove observer from memory
               this.observer = null
             }
-
-            img.addEventListener('load', fn)
-            // TODO: configurable error function and/or slot
-            img.addEventListener('error', fn)
 
             img.src = this.src
           }
@@ -90,16 +119,14 @@ const ClazyLoad = {
           let options = {
             threshold: this.threshold,
             root: this.element ? document.querySelector(this.element) : null,
-            // TODO: allow custom rootMargin
-            rootMargin: '0px'
+            rootMargin: this.margin
           }
 
           // creates IO instance
           this.observer = new IntersectionObserver((entries) => {
             // as we instantiated one for each component
             // we can directly access the first index
-            // TODO: configurable intersectionRatio
-            if (entries[0].intersectionRatio >= 0.4) {
+            if (entries[0].intersectionRatio >= this.ratio) {
               this.load()
             }
           }, options)
@@ -116,7 +143,9 @@ const ClazyLoad = {
           class: this.loaded ? 'loaded' : 'loading',
           ref: 'component'
         }, [
-          this.loaded ? this.$slots.image : this.$slots.placeholder
+          this.loaded
+            ? this.$slots.image
+            : this.$slots.placeholder
         ])
       },
       mounted() {
