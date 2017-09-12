@@ -84,7 +84,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
  * Vue Clazy Load
  * Component-based lazy (CLazy) load images in Vue.js 2
  * @author Matheus Grieger
- * @version 0.1.5
+ * @version 0.2.0
  */
 var ClazyLoad = {
   install: function install(Vue) {
@@ -113,9 +113,7 @@ var ClazyLoad = {
          * IntersectionObserver root element
          * @type {Object}
          */
-        element: {
-          type: String
-        },
+        element: String,
         /**
          * IntersectionObserver threshold
          * @type {Object}
@@ -125,12 +123,33 @@ var ClazyLoad = {
           default: function _default() {
             return [0, 0.5, 1];
           }
+        },
+        /**
+         * InserectionObserver visibility ratio
+         * @type {Object}
+         */
+        ratio: {
+          type: Number,
+          default: 0.4,
+          validator: function validator(value) {
+            // can't be less or equal to 0 and greater than 1
+            return value > 0 && value <= 1;
+          }
+        },
+        /**
+         * IntersectionObserver root margin
+         * @type {Object}
+         */
+        margin: {
+          type: String,
+          default: '0px'
         }
       },
       data: function data() {
         return {
           loaded: false,
-          observer: null
+          observer: null,
+          errored: false
         };
       },
 
@@ -148,21 +167,31 @@ var ClazyLoad = {
           if (!this.loaded) {
             // fake image
             var img = new Image();
-            // with this function we can use it in multiple places
-            // like the two listeners below
-            var fn = function fn() {
+
+            img.addEventListener('load', function () {
               _this.loaded = true;
               // emits 'load' event upwards
               _this.$emit('load');
+
+              _clear();
+            });
+
+            img.addEventListener('error', function (event) {
+              _this.errored = true;
+              // emits 'error' event upwards
+              // adds the original event as argument
+              _this.$emit('error', event);
+
+              _clear();
+            });
+
+            // function used to clear variables from memory
+            var _clear = function _clear() {
               // discard fake image
               img = null;
               // remove observer from memory
               _this.observer = null;
             };
-
-            img.addEventListener('load', fn);
-            // TODO: configurable error function and/or slot
-            img.addEventListener('error', fn);
 
             img.src = this.src;
           }
@@ -178,15 +207,13 @@ var ClazyLoad = {
           var options = {
             threshold: this.threshold,
             root: this.element ? document.querySelector(this.element) : null,
-            // TODO: allow custom rootMargin
-            rootMargin: '0px'
+            rootMargin: this.margin
 
             // creates IO instance
           };this.observer = new IntersectionObserver(function (entries) {
             // as we instantiated one for each component
             // we can directly access the first index
-            // TODO: configurable intersectionRatio
-            if (entries[0].intersectionRatio >= 0.4) {
+            if (entries[0].intersectionRatio >= _this2.ratio) {
               _this2.load();
             }
           }, options);

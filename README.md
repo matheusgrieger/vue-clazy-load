@@ -2,7 +2,7 @@
 
 > _Claziest_ lazy loader out there!
 
-Component-based image lazy loader allowing deep customization, transitions and optimizations for Vue.js 2.
+Component-based image lazy loader for Vue.js 2
 
 [![npm](https://img.shields.io/npm/dm/vue-clazy-load.svg)](https://www.npmjs.com/package/vue-clazy-load)
 [![npm](https://img.shields.io/npm/v/vue-clazy-load.svg)](https://www.npmjs.com/package/vue-clazy-load)
@@ -10,11 +10,7 @@ Component-based image lazy loader allowing deep customization, transitions and o
 [![GitHub pull requests](https://img.shields.io/badge/PR-welcome-green.svg)]()
 [![GitHub stars](https://img.shields.io/github/stars/matheusgrieger/vue-clazy-load.svg?style=social&label=Star)]()
 
-## Goals and objectives
-
-There are plenty of other Lazy Loaders out there, but they are all `directive`-based. Clazy Load is `component`-based, meaning you can use other components as the preloader or loading message, such as spinners from component kits like Vuetify and KeenUI and transition between loading and loaded states. That is not possible with other libraries.
-
-This project is also lightweight (<800 bytes gzipped) and uses the latest web APIs for best performance.
+This component approach swaps slots based on the image's loading state. Thus allowing you to use anything as a preloader, such as [component frameworks](https://github.com/vuejs/awesome-vue#frameworks)' spinners and progress bars. Such method also enables transitioning between states, a designer's dream.
 
 ## Demo
 
@@ -22,7 +18,7 @@ Check out the [example page](https://matheusgrieger.github.io/vue-clazy-load/exa
 
 ## Installation
 
-Select one option:
+Select one:
 
 1. Install using **npm**
 
@@ -31,16 +27,16 @@ Select one option:
   ```
   You can omit the `--save` option if using `npm@^5`.
 
-  You can also use Yarn as:
+  You can also use Yarn (recommended) as:
 
   ```sh
   yarn add vue-clazy-load
   ```
 
-  In your JavaScript file:
+  Then in your JavaScript file:
 
   ```js
-  import VueClazyLoad from 'vue-clazy-load'
+  import VueClazyLoad from 'vue-clazy-load' // ES6 (Babel and others)
   ```
 
   \- or -
@@ -51,11 +47,19 @@ Select one option:
 
 2. Embed script tag
 
+  Locally installed via npm/yarn:
+
+  ```html
+  <script src="node_modules/vue-clazy-load/dist/vue-clazy-load.min.js"></script>
+  ```
+
+  Or from CDN:
+
   ```html
   <script src="https://unpkg.com/vue-clazy-load/dist/vue-clazy-load.min.js"></script>
   ```
 
-Then register the component into Vue:
+Lastly, register the component into Vue:
 
 ```js
 Vue.use(VueClazyLoad)
@@ -78,14 +82,16 @@ And no JS code is needed whatsoever, Clazy Load works out of the box.
 
 ### Props
 
-The component needs some configuration, though. It's only one required option, so it remains pretty simple.
+The component needs some configuration, though. There's only one required option, keeping it pretty simple.
 
 | Prop | Description | Type | Default |
 |------|-------------|------|---------|
 | src | Image source that will be loaded. | String | _required_ |
-| tag | What tag the component will render to, like [vue-router router-link component](https://router.vuejs.org/en/api/router-link.html). | String | div
-| element | Selector for IntersectionObserver's root element. Leave blank to use _viewport_. See below for more details. | String | `null`
-| threshold | Values for IntersectionObserver's threshold option. See below for more details. | Array/Number | `[0, 0.5, 1]`
+| tag | What tag the component will render to, like [vue-router router-link component](https://router.vuejs.org/en/api/router-link.html). | String | div |
+| element | Selector for IntersectionObserver's root element. Leave blank to use _viewport_. See below for more details. | String | `null` |
+| threshold | Values for IntersectionObserver's threshold option. See below for more details. | Array/Number | `[0, 0.5, 1]` |
+| ratio | Element visibility percentage to compare and trigger loading. Must be between 0 and 1. | Number | `0.4` |
+| margin | IntersectionObserver's margin option. See original documentation for more details. | String | '0px' |
 
 ### Classes
 
@@ -100,6 +106,7 @@ There is currently one event available for you to listen to on the component.
 | Event | Description |
 |-------|-------------|
 | load | Event emitted when image finishes loading |
+| error | Event emitted if the image fails to load for whatever reason |
 
 ### Sub-components and elements
 
@@ -138,10 +145,10 @@ Check out [changelog](CHANGELOG.md) file.
 
 ## TODOs
 
-- [ ] Configurable loading error, possibly with another slot
-- [ ] Configurable `intersectionRatio` comparison value
+- [X] Configurable loading error, possibly with another slot
+- [X] Configurable `intersectionRatio` comparison value
 - [ ] Custom state class names
-- [ ] Configurable `rootMargin` for IntersectionObserver's root element
+- [X] Configurable `rootMargin` for IntersectionObserver's root element
 - [ ] Improve documentation writing
 - [ ] Add more documentation details
 
