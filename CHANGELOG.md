@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.2.0
+
+- **NEW** error event for when image fails to load
+- **NEW** margin option for IntersectionObserver's `rootMargin`
+- **NEW** ratio option for comparing element's visible percentage
+- **FIX** (some) bad documentation grammar
+
 ## v0.1.5
 
 - **FIX** build error when using Webpack and `import`ing
