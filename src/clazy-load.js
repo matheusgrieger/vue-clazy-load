@@ -116,8 +116,9 @@ const ClazyLoad = {
          * Creates IntersectionObserver instance and observe current element
          */
         observe() {
-          if (!this.$refs.component)
-            return;
+          if (!this.$refs.component) {
+            return;          
+          }
           
           let options = {
             threshold: this.threshold,
