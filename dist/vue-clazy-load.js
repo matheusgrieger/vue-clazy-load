@@ -80,168 +80,179 @@ return /******/ (function(modules) { // webpackBootstrap
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "install", function() { return install; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "component", function() { return component; });
 /*!
  * Vue Clazy Load
  * Component-based lazy (CLazy) load images in Vue.js 2
  * @author Matheus Grieger
- * @version 0.2.0
+ * @version 0.3.0
  */
-var ClazyLoad = {
-  install: function install(Vue) {
-    Vue.component('clazy-load', {
-      name: 'ClazyLoad',
-      props: {
-        /**
-         * HTML/Component tag name to be used in place of the component
-         * @type {Object}
-         * @default div
-         */
-        tag: {
-          type: String,
-          default: 'div'
-        },
-        /**
-         * Image source URL
-         * @type {Object}
-         * @required
-         */
-        src: {
-          type: String,
-          required: true
-        },
-        /**
-         * IntersectionObserver root element
-         * @type {Object}
-         */
-        element: String,
-        /**
-         * IntersectionObserver threshold
-         * @type {Object}
-         */
-        threshold: {
-          type: [Array, Number],
-          default: function _default() {
-            return [0, 0.5, 1];
-          }
-        },
-        /**
-         * InserectionObserver visibility ratio
-         * @type {Object}
-         */
-        ratio: {
-          type: Number,
-          default: 0.4,
-          validator: function validator(value) {
-            // can't be less or equal to 0 and greater than 1
-            return value > 0 && value <= 1;
-          }
-        },
-        /**
-         * IntersectionObserver root margin
-         * @type {Object}
-         */
-        margin: {
-          type: String,
-          default: '0px'
-        }
-      },
-      data: function data() {
-        return {
-          loaded: false,
-          observer: null,
-          errored: false
-        };
-      },
-
-      methods: {
-        /**
-         * Start loading image
-         */
-        load: function load() {
-          var _this = this;
-
-          // disconnect observer
-          // so it doesn't load more than once
-          this.observer.disconnect();
-
-          if (!this.loaded) {
-            // fake image
-            var img = new Image();
-
-            img.addEventListener('load', function () {
-              _this.loaded = true;
-              // emits 'load' event upwards
-              _this.$emit('load');
-
-              _clear();
-            });
-
-            img.addEventListener('error', function (event) {
-              _this.errored = true;
-              // emits 'error' event upwards
-              // adds the original event as argument
-              _this.$emit('error', event);
-
-              _clear();
-            });
-
-            // function used to clear variables from memory
-            var _clear = function _clear() {
-              // discard fake image
-              img = null;
-              // remove observer from memory
-              _this.observer = null;
-            };
-
-            img.src = this.src;
-          }
-        },
-
-
-        /**
-         * Creates IntersectionObserver instance and observe current element
-         */
-        observe: function observe() {
-          var _this2 = this;
-
-          var options = {
-            threshold: this.threshold,
-            root: this.element ? document.querySelector(this.element) : null,
-            rootMargin: this.margin
-
-            // creates IO instance
-          };this.observer = new IntersectionObserver(function (entries) {
-            // as we instantiated one for each component
-            // we can directly access the first index
-            if (entries[0].intersectionRatio >= _this2.ratio) {
-              _this2.load();
-            }
-          }, options);
-
-          // start observing main component
-          this.observer.observe(this.$refs.component);
-        }
-      },
-      render: function render(h) {
-        return h(this.tag, {
-          // adds 'loaded' class if finished loading
-          // or 'loading' class if still loading
-          // TODO: allow custom class naming
-          class: this.loaded ? 'loaded' : 'loading',
-          ref: 'component'
-        }, [this.loaded ? this.$slots.image : this.$slots.placeholder]);
-      },
-      mounted: function mounted() {
-        // start observing the element visibility
-        // need to request animation frame to ensure the element is in the DOM
-        requestAnimationFrame(this.observe);
+var ClazyLoadComponent = {
+  name: 'ClazyLoad',
+  props: {
+    /**
+     * HTML/Component tag name to be used in place of the component
+     * @type {Object}
+     * @default div
+     */
+    tag: {
+      type: String,
+      default: 'div'
+    },
+    /**
+     * Image source URL
+     * @type {Object}
+     * @required
+     */
+    src: {
+      type: String,
+      required: true
+    },
+    /**
+     * IntersectionObserver root element
+     * @type {Object}
+     */
+    element: String,
+    /**
+     * IntersectionObserver threshold
+     * @type {Object}
+     */
+    threshold: {
+      type: [Array, Number],
+      default: function _default() {
+        return [0, 0.5, 1];
       }
-    });
+    },
+    /**
+     * InserectionObserver visibility ratio
+     * @type {Object}
+     */
+    ratio: {
+      type: Number,
+      default: 0.4,
+      validator: function validator(value) {
+        // can't be less or equal to 0 and greater than 1
+        return value > 0 && value <= 1;
+      }
+    },
+    /**
+     * IntersectionObserver root margin
+     * @type {Object}
+     */
+    margin: {
+      type: String,
+      default: '0px'
+    }
+  },
+  data: function data() {
+    return {
+      loaded: false,
+      observer: null,
+      errored: false
+    };
+  },
+
+  methods: {
+    /**
+     * Start loading image
+     */
+    load: function load() {
+      var _this = this;
+
+      // disconnect observer
+      // so it doesn't load more than once
+      this.observer.disconnect();
+
+      if (!this.loaded) {
+        // fake image
+        var img = new Image();
+
+        img.addEventListener('load', function () {
+          _this.loaded = true;
+          // emits 'load' event upwards
+          _this.$emit('load');
+
+          _clear();
+        });
+
+        img.addEventListener('error', function (event) {
+          _this.errored = true;
+          // emits 'error' event upwards
+          // adds the original event as argument
+          _this.$emit('error', event);
+
+          _clear();
+        });
+
+        // function used to clear variables from memory
+        var _clear = function _clear() {
+          // discard fake image
+          img = null;
+          // remove observer from memory
+          _this.observer = null;
+        };
+
+        img.src = this.src;
+      }
+    },
+
+
+    /**
+     * Creates IntersectionObserver instance and observe current element
+     */
+    observe: function observe() {
+      var _this2 = this;
+
+      var options = {
+        threshold: this.threshold,
+        root: this.element ? document.querySelector(this.element) : null,
+        rootMargin: this.margin
+
+        // creates IO instance
+      };this.observer = new IntersectionObserver(function (entries) {
+        // as we instantiated one for each component
+        // we can directly access the first index
+        if (entries[0].intersectionRatio >= _this2.ratio) {
+          _this2.load();
+        }
+      }, options);
+
+      // start observing main component
+      this.observer.observe(this.$el);
+    }
+  },
+  render: function render(h) {
+    return h(this.tag, {
+      // adds 'loaded' class if finished loading
+      // or 'loading' class if still loading
+      // TODO: allow custom class naming
+      class: this.loaded ? 'loaded' : 'loading'
+    }, [this.loaded ? this.$slots.default || this.$slots.image // allows for "default" slot
+    : this.$slots.placeholder]);
+  },
+  mounted: function mounted() {
+    // start observing the element visibility
+    this.$nextTick(this.observe);
   }
 };
 
+/**
+ * ClazyLoad default object for Vue.use() with install function
+ */
+var ClazyLoad = {
+  install: function install(Vue) {
+    Vue.component('clazy-load', ClazyLoadComponent);
+  }
+};
+
+// Full component and install
 /* harmony default export */ __webpack_exports__["default"] = (ClazyLoad);
+
+// Install function only (Vue.use)
 var install = ClazyLoad.install;
+
+// Component object
+var component = ClazyLoadComponent;
 
 /***/ })
 /******/ ]);

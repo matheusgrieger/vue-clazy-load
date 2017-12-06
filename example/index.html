@@ -12,7 +12,7 @@
   <body>
     <div id="app">
       <clazy-load class="wrapper" @load="log" v-for="(img, index) in images" :src="img + index" :key="index">
-        <transition name="fade" slot="image">
+        <transition name="fade">
           <img :src="img + index">
         </transition>
         <transition name="fade" slot="placeholder">
