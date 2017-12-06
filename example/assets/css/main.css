@@ -16,7 +16,7 @@ body {
   flex: 1 0 33.333%;
   position: relative;
   height: 0;
-  padding-bottom: 33.333%;
+  padding-bottom: 33.333vw;
 }
 
 .wrapper img {
