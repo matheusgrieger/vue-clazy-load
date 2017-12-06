@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.3.0
+
+- **NEW** extra `component` export so you can install the component where needed, not only globally
+- **NEW** don't need to explicitly add `slot="image"` to your tags, the `default` slot will be used prioritarily, if found
+  Note: if both are present, only the `default` will be used.
+- **FIX** changed `requestAnimationFrame` to `$nextTick`, which reduces errors of undefined elements
+- **FIX** removed main element `ref` to use `this.$el` instead, reducing processing
+
 ## v0.2.0
 
 - **NEW** error event for when image fails to load

@@ -71,7 +71,7 @@ Using Clazy Load is easy. The HTML code you need is the following:
 
 ```html
 <clazy-load src="https://unsplash.it/500">
-  <img src="https://unsplash.it/500" slot="image">
+  <img src="https://unsplash.it/500">
   <div class="preloader" slot="placeholder">
     Loading message
   </div>
@@ -105,16 +105,16 @@ There is currently one event available for you to listen to on the component.
 
 | Event | Description |
 |-------|-------------|
-| load | Event emitted when image finishes loading |
+| load  | Event emitted when image finishes loading |
 | error | Event emitted if the image fails to load for whatever reason |
 
 ### Sub-components and elements
 
-The reason the component has a `src` prop while the `<img>` does as well is to unbind them and allow you to use whatever you want in the `image` slot. For instance, a simple case in which you would separate the image from the loader:
+The reason the component has a `src` prop while the `<img>` does as well is to unbind them and allow you to use whatever you want in the `default` slot. For instance, a simple case in which you would separate the image from the loader:
 
 ```html
 <clazy-load src="imgsrc">
-  <figure class="image-wrapper" slot="image">
+  <figure class="image-wrapper">
     <img src="imgsrc">
   </figure>
   <div class="preloader-wrapper" slot="placeholder">
@@ -143,14 +143,9 @@ The two configurable props `element` and `threshold` are bound to IntersectionOb
 
 Check out [changelog](CHANGELOG.md) file.
 
-## TODOs
+## Roadmap
 
-- [X] Configurable loading error, possibly with another slot
-- [X] Configurable `intersectionRatio` comparison value
-- [ ] Custom state class names
-- [X] Configurable `rootMargin` for IntersectionObserver's root element
-- [ ] Improve documentation writing
-- [ ] Add more documentation details
+Check [roadmap](ROADMAP.md) file.
 
 ## Contributing
 
