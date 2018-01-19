@@ -15,6 +15,7 @@ These are planned features for Vue Clazy Load in the future.
   **Why?** It adds too much to the code. I have already included an additional export so you can import the entire module or just the parts that interest you (install function, component object). By doing this, the package size will be reduced and a simple condition will be made to add `VueClazyLoad` to the `window` object, if needed.
 - Remove `image` slot compatibility
 - Add optional `error` slot
+- Add support for `srcset` and responsive images - issue #6
 
 ---
 
