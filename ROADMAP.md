@@ -11,11 +11,11 @@ These are planned features for Vue Clazy Load in the future.
 
 ## 1.0.0
 
-- Remove global definition from Webpack configuration.
-  **Why?** It adds too much to the code. I have already included an additional export so you can import the entire module or just the parts that interest you (install function, component object). By doing this, the package size will be reduced and a simple condition will be made to add `VueClazyLoad` to the `window` object, if needed.
+- Remove Webpack in favor of Vue CLI Service, targetted as `lib`
 - Remove `image` slot compatibility
 - Add optional `error` slot
 - Add support for `srcset` and responsive images - issue #6
+- Create fully functional testing suite and CircleCI integration for pull request status checks
 
 ---
 
