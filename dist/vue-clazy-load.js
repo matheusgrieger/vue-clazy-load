@@ -7,7 +7,7 @@
 		exports["VueClazyLoad"] = factory();
 	else
 		root["VueClazyLoad"] = factory();
-})(this, function() {
+})(typeof self !== 'undefined' ? self : this, function() {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -142,6 +142,16 @@ var ClazyLoadComponent = {
     margin: {
       type: String,
       default: '0px'
+    },
+    /**
+     * Optional CORS mode ("anonymous" | "use-credentials")
+     * @see https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image
+     * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img#attr-crossorigin
+     * @type {String}
+     */
+    crossorigin: {
+      type: String,
+      default: null
     }
   },
   data: function data() {
@@ -191,6 +201,11 @@ var ClazyLoadComponent = {
           // remove observer from memory
           _this.observer = null;
         };
+
+        // CORS mode configuration
+        if (crossorigin !== null) {
+          img.crossorigin = crossorigin;
+        }
 
         img.src = this.src;
       }
