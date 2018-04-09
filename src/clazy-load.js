@@ -59,6 +59,24 @@ const ClazyLoadComponent = {
     margin: {
       type: String,
       default: '0px'
+    },
+    /**
+     * Optional CORS mode opt-in
+     * @see https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image
+     * @type {Boolean}
+     */
+    crossOrigin: {
+      type: Boolean,
+      default: false
+    },
+    /**
+     * CrossOrigin value ("anonymous" | "use-credentials")
+     * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img#attr-crossorigin
+     * @type {String}
+     */
+    crossOriginValue: {
+      type: String,
+      default: 'anonymous'
     }
   },
   data() {
@@ -104,6 +122,11 @@ const ClazyLoadComponent = {
           img = null
           // remove observer from memory
           this.observer = null
+        }
+
+        // CORS mode configuration
+        if (crossOrigin) {
+          img.crossOrigin = crossOriginValue
         }
 
         img.src = this.src
