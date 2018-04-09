@@ -203,8 +203,8 @@ var ClazyLoadComponent = {
         };
 
         // CORS mode configuration
-        if (crossorigin !== null) {
-          img.crossorigin = crossorigin;
+        if (this.crossorigin !== null) {
+          img.crossorigin = this.crossorigin;
         }
 
         img.src = this.src;
