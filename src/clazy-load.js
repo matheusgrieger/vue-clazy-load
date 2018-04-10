@@ -2,14 +2,14 @@
  * Vue Clazy Load
  * Component-based lazy (CLazy) load images in Vue.js 2
  * @author Matheus Grieger
- * @version 0.3.0
+ * @version 0.4.0
  */
 const ClazyLoadComponent = {
   name: 'ClazyLoad',
   props: {
     /**
      * HTML/Component tag name to be used in place of the component
-     * @type {Object}
+     * @type {String}
      * @default div
      */
     tag: {
@@ -18,7 +18,7 @@ const ClazyLoadComponent = {
     },
     /**
      * Image source URL
-     * @type {Object}
+     * @type {String}
      * @required
      */
     src: {
@@ -27,12 +27,12 @@ const ClazyLoadComponent = {
     },
     /**
      * IntersectionObserver root element
-     * @type {Object}
+     * @type {String}
      */
     element: String,
     /**
      * IntersectionObserver threshold
-     * @type {Object}
+     * @type {Array, Number}
      */
     threshold: {
       type: [Array, Number],
@@ -42,7 +42,7 @@ const ClazyLoadComponent = {
     },
     /**
      * InserectionObserver visibility ratio
-     * @type {Object}
+     * @type {Number}
      */
     ratio: {
       type: Number,
@@ -54,7 +54,7 @@ const ClazyLoadComponent = {
     },
     /**
      * IntersectionObserver root margin
-     * @type {Object}
+     * @type {String}
      */
     margin: {
       type: String,
@@ -69,6 +69,30 @@ const ClazyLoadComponent = {
     crossorigin: {
       type: String,
       default: null
+    },
+    /**
+     * Class added to element when it finishes loading
+     * @type {String}
+     * @default loaded
+     */
+    loadedClass: {
+      type: String,
+      default: 'loaded'
+    },
+    /**
+     * Class added to element while it is loading
+     * @type {String}
+     */
+    loadingClass: {
+      type: String,
+      default: 'loading'
+    },
+    /**
+     * Class added to element if loading failed
+     * @type {String}
+     */
+    errorClass: {
+      type: String
     }
   },
   data() {
@@ -149,11 +173,13 @@ const ClazyLoadComponent = {
     }
   },
   render(h) {
+    // class to be added to element indicating load state
+    const elementClass = this.loaded ? this.loadedClass : this.loadingClass
+
     return h(this.tag, {
-      // adds 'loaded' class if finished loading
-      // or 'loading' class if still loading
-      // TODO: allow custom class naming
-      class: this.loaded ? 'loaded' : 'loading'
+      // if loading failed adds error class if exists,
+      // otherwhise adds elementClass defined above
+      class: this.errored && this.errorClass ? this.errorClass : elementClass
     }, [
       this.loaded
         ? this.$slots.default || this.$slots.image // allows for "default" slot
@@ -177,9 +203,6 @@ const ClazyLoad = {
 
 // Full component and install
 export default ClazyLoad
-
-// Install function only (Vue.use)
-export const install = ClazyLoad.install
 
 // Component object
 export const component = ClazyLoadComponent
