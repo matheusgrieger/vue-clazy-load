@@ -79,20 +79,19 @@ return /******/ (function(modules) { // webpackBootstrap
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "install", function() { return install; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "component", function() { return component; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "VueClazyLoad", function() { return VueClazyLoad; });
 /*!
  * Vue Clazy Load
  * Component-based lazy (CLazy) load images in Vue.js 2
  * @author Matheus Grieger
- * @version 0.3.0
+ * @version 0.4.0
  */
 var ClazyLoadComponent = {
   name: 'ClazyLoad',
   props: {
     /**
      * HTML/Component tag name to be used in place of the component
-     * @type {Object}
+     * @type {String}
      * @default div
      */
     tag: {
@@ -101,7 +100,7 @@ var ClazyLoadComponent = {
     },
     /**
      * Image source URL
-     * @type {Object}
+     * @type {String}
      * @required
      */
     src: {
@@ -110,12 +109,12 @@ var ClazyLoadComponent = {
     },
     /**
      * IntersectionObserver root element
-     * @type {Object}
+     * @type {String}
      */
     element: String,
     /**
      * IntersectionObserver threshold
-     * @type {Object}
+     * @type {Array, Number}
      */
     threshold: {
       type: [Array, Number],
@@ -125,7 +124,7 @@ var ClazyLoadComponent = {
     },
     /**
      * InserectionObserver visibility ratio
-     * @type {Object}
+     * @type {Number}
      */
     ratio: {
       type: Number,
@@ -137,7 +136,7 @@ var ClazyLoadComponent = {
     },
     /**
      * IntersectionObserver root margin
-     * @type {Object}
+     * @type {String}
      */
     margin: {
       type: String,
@@ -150,6 +149,34 @@ var ClazyLoadComponent = {
      * @type {String}
      */
     crossorigin: {
+      type: String,
+      default: null,
+      validator: function validator(value) {
+        return value === 'anonymous' || value === 'use-credentials';
+      }
+    },
+    /**
+     * Class added to element when it finishes loading
+     * @type {String}
+     * @default loaded
+     */
+    loadedClass: {
+      type: String,
+      default: 'loaded'
+    },
+    /**
+     * Class added to element while it is loading
+     * @type {String}
+     */
+    loadingClass: {
+      type: String,
+      default: 'loading'
+    },
+    /**
+     * Class added to element if loading failed
+     * @type {String}
+     */
+    errorClass: {
       type: String,
       default: null
     }
@@ -168,6 +195,9 @@ var ClazyLoadComponent = {
      */
     load: function load() {
       var _this = this;
+
+      // emits 'loading' event upwards
+      this.$emit('loading');
 
       // disconnect observer
       // so it doesn't load more than once
@@ -237,11 +267,13 @@ var ClazyLoadComponent = {
     }
   },
   render: function render(h) {
+    // class to be added to element indicating load state
+    var elementClass = this.loaded ? this.loadedClass : this.loadingClass;
+
     return h(this.tag, {
-      // adds 'loaded' class if finished loading
-      // or 'loading' class if still loading
-      // TODO: allow custom class naming
-      class: this.loaded ? 'loaded' : 'loading'
+      // if loading failed adds error class if exists,
+      // otherwhise adds elementClass defined above
+      class: this.errored && this.errorClass ? this.errorClass : elementClass
     }, [this.loaded ? this.$slots.default || this.$slots.image // allows for "default" slot
     : this.$slots.placeholder]);
   },
@@ -263,11 +295,8 @@ var ClazyLoad = {
 // Full component and install
 /* harmony default export */ __webpack_exports__["default"] = (ClazyLoad);
 
-// Install function only (Vue.use)
-var install = ClazyLoad.install;
-
 // Component object
-var component = ClazyLoadComponent;
+var VueClazyLoad = ClazyLoadComponent;
 
 /***/ })
 /******/ ]);
