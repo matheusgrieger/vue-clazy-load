@@ -85,7 +85,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
  * Vue Clazy Load
  * Component-based lazy (CLazy) load images in Vue.js 2
  * @author Matheus Grieger
- * @version 0.4.1
+ * @version 0.4.2
  */
 var ClazyLoadComponent = {
   name: 'ClazyLoad',
@@ -284,13 +284,18 @@ var ClazyLoadComponent = {
   }
 };
 
-// Exports install function for Vue
+// Export install function for CDN embeds
 var install = function install(Vue) {
   Vue.component('clazy-load', ClazyLoadComponent);
 };
 
 // Component object
 var VueClazyLoad = ClazyLoadComponent;
+
+// Exports default object for ES6 modules
+/* harmony default export */ __webpack_exports__["default"] = ({
+  install: install
+});
 
 /***/ })
 /******/ ]);
