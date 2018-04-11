@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.4.1
+
+- **FIX** accidentaly removed install function
+
 ## v0.4.0
 
 - **NEW** custom loading, loaded and error class naming
