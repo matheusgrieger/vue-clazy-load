@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.4.2
+
+- **FIX** restored install function for ES6 modules
+
 ## v0.4.1
 
 - **FIX** accidentaly removed install function
