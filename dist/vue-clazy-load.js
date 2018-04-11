@@ -79,12 +79,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "install", function() { return install; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "VueClazyLoad", function() { return VueClazyLoad; });
 /*!
  * Vue Clazy Load
  * Component-based lazy (CLazy) load images in Vue.js 2
  * @author Matheus Grieger
- * @version 0.4.0
+ * @version 0.4.1
  */
 var ClazyLoadComponent = {
   name: 'ClazyLoad',
@@ -283,17 +284,10 @@ var ClazyLoadComponent = {
   }
 };
 
-/**
- * ClazyLoad default object for Vue.use() with install function
- */
-var ClazyLoad = {
-  install: function install(Vue) {
-    Vue.component('clazy-load', ClazyLoadComponent);
-  }
+// Exports install function for Vue
+var install = function install(Vue) {
+  Vue.component('clazy-load', ClazyLoadComponent);
 };
-
-// Full component and install
-/* harmony default export */ __webpack_exports__["default"] = (ClazyLoad);
 
 // Component object
 var VueClazyLoad = ClazyLoadComponent;
