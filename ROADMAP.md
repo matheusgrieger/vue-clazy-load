@@ -4,11 +4,6 @@ These are planned features for Vue Clazy Load in the future.
 
 ---
 
-## 0.x.x
-
-- Improved documentation
-- Custom state class naming
-
 ## 1.0.0
 
 - Remove Webpack in favor of Vue CLI Service, targetted as `lib`

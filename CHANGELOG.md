@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.4.0
+
+- **NEW** custom loading, loaded and error class naming
+- **NEW** support for CORS (thanks to @gerardo-rodriguez)
+- **FIX** last update was not present on NPM, somehow
+- **FIX** improved docs
+
 ## v0.3.0
 
 - **NEW** extra `component` export so you can install the component where needed, not only globally

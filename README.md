@@ -10,7 +10,7 @@ Component-based image lazy loader for Vue.js 2
 [![GitHub pull requests](https://img.shields.io/badge/PR-welcome-green.svg)]()
 [![GitHub stars](https://img.shields.io/github/stars/matheusgrieger/vue-clazy-load.svg?style=social&label=Star)]()
 
-This component approach swaps slots based on the image's loading state. Thus allowing you to use anything as a preloader, such as [component frameworks](https://github.com/vuejs/awesome-vue#frameworks)' spinners and progress bars. Such method also enables transitioning between states, a designer's dream.
+Swaps between your image and another component when loading images, allowing you to use loaders from [component frameworks](https://github.com/vuejs/awesome-vue#frameworks) such as spinners and progress bars. This method also allows transitioning between the two components.
 
 ## Demo
 
@@ -18,56 +18,52 @@ Check out the [example page](https://matheusgrieger.github.io/vue-clazy-load/exa
 
 ## Installation
 
-Select one:
+Install with npm or yarn:
 
-1. Install using **npm**
+```sh
+npm install vue-clazy-load
+yarn add vue-clazy-load
+```
 
-  ```sh
-  npm install vue-clazy-load --save
-  ```
-  You can omit the `--save` option if using `npm@^5`.
+Then simply import it to your project through the method that suits you best
 
-  You can also use Yarn (recommended) as:
-
-  ```sh
-  yarn add vue-clazy-load
-  ```
-
-  Then in your JavaScript file:
-
+* ES6+
   ```js
-  import VueClazyLoad from 'vue-clazy-load' // ES6 (Babel and others)
+  import VueClazyLoad from 'vue-clazy-load'
   ```
 
-  \- or -
-
+* Common/Require
   ```js
   var VueClazyLoad = require('vue-clazy-load')
   ```
 
-2. Embed script tag
-
-  Locally installed via npm/yarn:
-
-  ```html
-  <script src="node_modules/vue-clazy-load/dist/vue-clazy-load.min.js"></script>
-  ```
-
-  Or from CDN:
-
-  ```html
-  <script src="https://unpkg.com/vue-clazy-load/dist/vue-clazy-load.min.js"></script>
-  ```
-
-Lastly, register the component into Vue:
+And install into your Vue instance
 
 ```js
 Vue.use(VueClazyLoad)
 ```
 
+You can import it into specific components if you don't want to register Clazy Load globally
+
+```js
+import { VueClazyLoad } from 'vue-clazy-load'
+
+export default {
+  components: {
+    VueClazyLoad
+  }
+}
+```
+
+Also available through Unpkg CDN
+
+```html
+<script src="https://unpkg.com/vue-clazy-load/dist/vue-clazy-load.min.js"></script>
+```
+
 ## Documentation
 
-Using Clazy Load is easy. The HTML code you need is the following:
+Clazy Load works without any JS configuration as is, all you need is the basic HTML markup:
 
 ```html
 <clazy-load src="https://unsplash.it/500">
@@ -77,67 +73,109 @@ Using Clazy Load is easy. The HTML code you need is the following:
   </div>
 </clazy-load>
 ```
-
-And no JS code is needed whatsoever, Clazy Load works out of the box.
+The only required prop you must set is `src` that must correspond to your image's.
 
 ### Props
 
-The component needs some configuration, though. There's only one required option, keeping it pretty simple.
+All props supported by Clazy Load are listed below with their types and explanation.
 
-| Prop | Description | Type | Default |
-|------|-------------|------|---------|
-| src | Image source that will be loaded. | String | _required_ |
-| tag | What tag the component will render to, like [vue-router router-link component](https://router.vuejs.org/en/api/router-link.html). | String | div |
-| element | Selector for IntersectionObserver's root element. Leave blank to use _viewport_. See below for more details. | String | `null` |
-| threshold | Values for IntersectionObserver's threshold option. See below for more details. | Array/Number | `[0, 0.5, 1]` |
-| ratio | Element visibility percentage to compare and trigger loading. Must be between 0 and 1. | Number | `0.4` |
-| margin | IntersectionObserver's margin option. See original documentation for more details. | String | '0px' |
+#### `src`
 
-### Classes
+* Type: string
+* Default: none
+* _Required_
 
-Custom classes on the Clazy Load component are passed to the rendered output.
+Source of the image to be loaded. Must match your `<img>` tag src.
 
-Also, the component adds `loading` and `loaded` classes to the **root** element regarding the two possible states, enabling further customization with CSS.
+#### `tag`
+
+* Type: string
+* Default: `"div"`
+
+What tag the component should render to.
+
+#### `element`
+
+* Type: string
+* Default: `null`
+
+Selector for Intersecion Observer's root element. Leave blank/null to use _viewport_.
+
+#### `threshold`
+
+* Type: Array | number
+* Default: `[0, 0.5, 1]`
+
+Values for Intersection Observer's threshold option.
+
+#### `ratio`
+
+* Type: number
+* Default: `0.4`
+
+Percent of the element that needs to be visible to trigger loading. Must be > 0 and <= 1.
+
+#### `margin`
+
+* Type: string
+* Default: `"0px"`
+
+Intersection Observer's margin option.
+
+You can read more on [MDN](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API) about every Intersection Observer-specific prop and what they do.
+
+#### `crossorigin`
+
+* Type: string
+* Default: `null`
+* Valid options: `"anonymous"` | `"use-credentials"`
+
+Sets image's `crossOrigin` option and allows loading external images. Useful for Service Workers and caching.
+
+#### `loadedClass`
+
+* Type: string
+* Default: `"loaded"`
+
+#### `loadingClass`
+
+* Type: string
+* Default: `"loading"`
+
+#### `errorClass`
+
+* Type: string
+* Default: `null`
+
+All classes are added to the **root** element, not the image itself.
 
 ### Events
 
-There is currently one event available for you to listen to on the component.
+#### `loading`
 
-| Event | Description |
-|-------|-------------|
-| load  | Event emitted when image finishes loading |
-| error | Event emitted if the image fails to load for whatever reason |
+Image started loading and placeholder is visible.
 
-### Sub-components and elements
+#### `load`
 
-The reason the component has a `src` prop while the `<img>` does as well is to unbind them and allow you to use whatever you want in the `default` slot. For instance, a simple case in which you would separate the image from the loader:
+* Param: native load event
 
-```html
-<clazy-load src="imgsrc">
-  <figure class="image-wrapper">
-    <img src="imgsrc">
-  </figure>
-  <div class="preloader-wrapper" slot="placeholder">
-    <preloader-component></preloader-component>
-  </div>
-</clazy-load>
-```
+Image finished loading and is now visible.
 
-Another case would be to use transitions. Check out the [example](example/index.html) for details in using transitions.
+#### `error`
 
-### Scroll watching behavior
+* Param: native error event
 
-Clazy Load uses the new IntersectionObserver API to watch for element visibility on screen. This way it is not only optimized due to use native browser API, it has no proprietary code or gimmicks watching for scroll and making checks, so it will be easier to maintain.
+Could not load image. **Image is not shown, placeholder still visible.**
 
-The downside is that this API is quite recent, so there still is small browser compatibility. Gladly, [Polyfill.io](https://polyfill.io/) covers this use case, and if you need to support older browsers, such as IE, you can include the following tag in your page:
+### Compatibility
+
+Vue Clazy Load uses the Intersection Observer API to watch for the element visibility on screen. The advantages are native optimization from each browser and no need to implement a custom solution that may be buggy and increase file size. The only caveat to this approach is that this API is quite new, so older browsers do not support it.
+
+If your application needs to be backwards compatible with IE and others, there are polyfills available. I personally recommend [Polyfill.io](https://polyfill.io/). You can check their documentation on how to add it to your website, or simply include the following tag if you're not using any other polyfills:
 
 ```html
 <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=IntersectionObserver"></script>
 ```
-
-Or simply add `IntersectionObserver` to the `?features=` query of the URL if already using Polyfill.
-
-The two configurable props `element` and `threshold` are bound to IntersectionObserver. `element` is used in a `document.querySelector` to pass the element to the `root` option, and `threshold` is used as it is. More details on those two options are available on [MDN](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API).
 
 ## Changelog
 
@@ -149,10 +187,10 @@ Check [roadmap](ROADMAP.md) file.
 
 ## Contributing
 
-Issues, questions and pull requests are always welcome. Just don't be unpleasant.
+Issues, questions and feature requests are welcome. If you can cover some problem, pull requests are also very welcome!
 
 ## License
 
 [MIT](http://opensource.org/licenses/MIT)
 
-Copyright (c) 2017, Matheus Grieger
+Copyright (c) 2017-2018, Matheus Grieger

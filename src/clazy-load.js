@@ -68,7 +68,10 @@ const ClazyLoadComponent = {
      */
     crossorigin: {
       type: String,
-      default: null
+      default: null,
+      validator(value) {
+        return value === 'anonymous' || value === 'use-credentials'
+      }
     },
     /**
      * Class added to element when it finishes loading
@@ -92,7 +95,8 @@ const ClazyLoadComponent = {
      * @type {String}
      */
     errorClass: {
-      type: String
+      type: String,
+      default: null
     }
   },
   data() {
@@ -107,6 +111,9 @@ const ClazyLoadComponent = {
      * Start loading image
      */
     load() {
+      // emits 'loading' event upwards
+      this.$emit('loading')
+
       // disconnect observer
       // so it doesn't load more than once
       this.observer.disconnect()
@@ -153,7 +160,7 @@ const ClazyLoadComponent = {
      * Creates IntersectionObserver instance and observe current element
      */
     observe() {
-      let options = {
+      const options = {
         threshold: this.threshold,
         root: this.element ? document.querySelector(this.element) : null,
         rootMargin: this.margin
@@ -205,4 +212,4 @@ const ClazyLoad = {
 export default ClazyLoad
 
 // Component object
-export const component = ClazyLoadComponent
+export const VueClazyLoad = ClazyLoadComponent
