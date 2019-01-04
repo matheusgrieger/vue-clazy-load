@@ -1,8 +1,10 @@
 const webpack = require('webpack')
 const path = require('path')
+const UglifyJsPlugin = require("uglifyjs-webpack-plugin")
 
 module.exports = ['normal', 'minified'].map((type) => {
   let config = {
+    mode: 'none',
     entry: './src/clazy-load.js',
     output: {
       filename: type === 'normal' ? 'vue-clazy-load.js' : 'vue-clazy-load.min.js',
@@ -17,17 +19,21 @@ module.exports = ['normal', 'minified'].map((type) => {
         use: 'babel-loader'
       }]
     },
-    plugins: []
-  }
-
-  if (type === 'minified') {
-    config.plugins.push(
-      new webpack.optimize.UglifyJsPlugin({
-        compress: {
-          warnings: false
-        }
-      })
-    )
+    optimization: {
+      minimize: type === 'minified',
+      minimizer: [
+        new UglifyJsPlugin({
+          sourceMap: true,
+          parallel: 4,
+          uglifyOptions: {
+            warnings: false,
+            compress: {
+              warnings: false
+            },
+          },
+        })
+      ]
+    }
   }
 
   return config

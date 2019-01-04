@@ -16,4 +16,4 @@ These are planned features for Vue Clazy Load in the future.
 
 ## Feature requests
 
-If you feel the need of some feature that is currently not implemented, please, file an inssue and I'll get on to that.
+If you feel the need of some feature that is currently not implemented, please, file an issue and I'll get on to that.
